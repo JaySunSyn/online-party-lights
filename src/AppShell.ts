@@ -77,7 +77,7 @@ export class AppShell extends LitElement {
         numberOfOutputChannels: 1,
       },
       computeBPMDelay: 3000,
-      stabilizationTime: 3000,
+      stabilizationTime: 10000,
       continuousAnalysis: true,
       pushTime: 1000,
       pushCallback: (err: any, bpmList: BPM[]) => {
