@@ -30,6 +30,17 @@ export class AppShell extends LitElement {
       width: 100%;
       background-color: var(--beat-background-color, #000);
     }
+
+    button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 50px;
+      width: 100px;
+      border-radius: 5px;
+      border: 0;
+    }
   `;
 
   constructor() {
@@ -117,6 +128,7 @@ export class AppShell extends LitElement {
   _start() {
     this._initAudio();
     this._started = true;
+    this._bpmChanged(120);
   }
 
   render() {
