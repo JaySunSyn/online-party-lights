@@ -15,9 +15,11 @@ export class AppShell extends LitElement {
     | ReturnType<typeof setInterval>
     | undefined;
 
-  @property({ type: Object }) _audioContext: AudioContext;
+  @property({ type: Object }) _audioContext: AudioContext | undefined;
 
   @property({ type: Boolean }) _started: boolean;
+
+  @property({ type: Boolean }) _initialized: boolean;
 
   static styles = css`
     :host {
@@ -29,6 +31,10 @@ export class AppShell extends LitElement {
       height: 100%;
       width: 100%;
       background-color: var(--beat-background-color, #000);
+    }
+
+    .main[initializing] {
+      height: 98%;
     }
 
     button {
@@ -45,11 +51,14 @@ export class AppShell extends LitElement {
 
   constructor() {
     super();
-    this._audioContext = new AudioContext();
     this._started = false;
+    this._initialized = false;
   }
 
   _onStream(stream: MediaStream) {
+    if (this._audioContext == null) {
+      return;
+    }
     const input = this._audioContext.createMediaStreamSource(stream);
     const scriptProcessorNode = this._audioContext.createScriptProcessor(
       bufferSize,
@@ -67,7 +76,7 @@ export class AppShell extends LitElement {
         numberOfInputChannels: 1,
         numberOfOutputChannels: 1,
       },
-      computeBPMDelay: 5000,
+      computeBPMDelay: 3000,
       stabilizationTime: 10000,
       continuousAnalysis: true,
       pushTime: 1000,
@@ -77,6 +86,7 @@ export class AppShell extends LitElement {
           console.info('Listening...');
           return;
         }
+        this._initialized = true;
         const bpm = bpmList[0].tempo;
         this._bpmChanged(bpm);
       },
@@ -92,6 +102,8 @@ export class AppShell extends LitElement {
 
   async _initAudio() {
     const context = new window.AudioContext();
+    this._audioContext = context;
+
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
@@ -135,6 +147,6 @@ export class AppShell extends LitElement {
     if (!this._started) {
       return html`<button @click=${this._start}>Start</button>`;
     }
-    return html`<div class="main"></div> `;
+    return html`<div class="main" ?initializing=${!this._initialized}></div> `;
   }
 }
