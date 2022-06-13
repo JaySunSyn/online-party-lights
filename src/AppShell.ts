@@ -1,6 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 
+import { initializeApp } from "firebase/app";
+import { Analytics, getAnalytics, logEvent } from "firebase/analytics";
+
 // @ts-ignore-next-line
 import { RealTimeBPMAnalyzer } from 'realtime-bpm-analyzer/src/realtime-bpm-analyzer.js';
 
@@ -20,6 +23,8 @@ export class AppShell extends LitElement {
   @property({ type: Boolean }) _started: boolean;
 
   @property({ type: Boolean }) _initialized: boolean;
+  
+  @property({ type: Object }) _analytics: Analytics;
 
   static styles = css`
     :host {
@@ -53,6 +58,21 @@ export class AppShell extends LitElement {
     super();
     this._started = false;
     this._initialized = false;
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4nD_GZF3ISXIgLX3osmC-3cP5H594Yxo",
+      authDomain: "music-party-lights-online.firebaseapp.com",
+      projectId: "music-party-lights-online",
+      storageBucket: "music-party-lights-online.appspot.com",
+      messagingSenderId: "326031934511",
+      appId: "1:326031934511:web:292376d66b9aa7b23bf2da",
+      measurementId: "G-8HXNLMBB3F"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    this._analytics = getAnalytics(app);
   }
 
   _onStream(stream: MediaStream) {
@@ -141,6 +161,7 @@ export class AppShell extends LitElement {
     this._initAudio();
     this._started = true;
     this._bpmChanged(120);
+    logEvent(this._analytics, 'start_clicked');
   }
 
   render() {

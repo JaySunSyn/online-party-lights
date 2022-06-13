@@ -17,6 +17,7 @@
     "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\""
   },
   "dependencies": {
+    "firebase": "^9.8.3",
     "lit": "^2.0.2",
     "realtime-bpm-analyzer": "^2.1.6"
   },
