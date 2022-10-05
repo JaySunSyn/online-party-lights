@@ -84,6 +84,7 @@ export default {
     copy({
       targets: [
         { src: "./copy-assets/**/*", dest: "./dist" },
+        { src: "./manifest/**/*", dest: "./dist/manifest" },
       ],
     }),
   ],
